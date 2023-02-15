@@ -12,7 +12,7 @@ def local_conditionnal_acceptance(kmax, T0, f):
     neighbors = S_best.get_neighbors()
     T = T0
     k = 0
-    while k < kmax and len(neighbors) > 0:
+    while k < kmax > 0:
         selected_index = random.randint(0, len(neighbors)-1)
         S_new = neighbors[selected_index]
         E_new = S_new.cost()
@@ -21,6 +21,9 @@ def local_conditionnal_acceptance(kmax, T0, f):
         if E_new > E or random.uniform(0, 1) < math.exp(-(E-E_new)/T):
             S = S_new
             E = E_new
+            if E_new <= E:
+                print('Risky choice !', end=' ')
+                S.display()
             neighbors = S.get_neighbors()
             if E > E_best:
                 S_best = S
