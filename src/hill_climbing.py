@@ -1,8 +1,8 @@
 from solution import Solution
 import random
 
-def hill_climibing(kmax):
-    Sbest = Solution('-O3', 'avx512', '256', '256', '256', '16', '32', '32', '32')
+def hill_climbing(kmax, Sinit):
+    Sbest = Sinit
     Ebest = Sbest.cost()
     neighbors = Sbest.get_neighbors()
     k = 0
@@ -24,4 +24,4 @@ def hill_climibing(kmax):
             path.append((Sbest, Ebest))
             neighbors = Sbest.get_neighbors()
         k += 1
-    return Sbest, path
+    return Sbest, Ebest, path
