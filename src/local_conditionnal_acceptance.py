@@ -5,7 +5,7 @@ import math
 
 def local_conditionnal_acceptance(kmax, T0, f):
     S_best = Solution('-O3', 'avx512', '256', '256',
-                      '256', '16', '32', '32', '32')
+                      '256', '16', '48', '32', '32')
     E_best = S_best.cost()
     S = S_best
     E = E_best

@@ -1,8 +1,10 @@
 from solution import Solution
 import random
 
+
 def hill_climibing(kmax):
-    Sbest = Solution('-O3', 'avx512', '256', '256', '256', '16', '32', '32', '32')
+    Sbest = Solution('-O3', 'avx512', '256', '256',
+                     '256', '16', '32', '32', '32')
     Ebest = Sbest.cost()
     neighbors = Sbest.get_neighbors()
     k = 0
