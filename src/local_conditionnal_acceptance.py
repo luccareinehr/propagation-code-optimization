@@ -18,6 +18,7 @@ def local_conditionnal_acceptance(kmax, T0, f):
         E_new = S_new.cost()
         print('Cost= ', E_new, end=' ')
         S_new.display()
+        path = [(S_best, E_best)]
         if E_new > E or random.uniform(0, 1) < math.exp((E_new-E)/T):
             if E_new <= E:
                 print('Risky choice !', end=' ')
@@ -30,6 +31,7 @@ def local_conditionnal_acceptance(kmax, T0, f):
                 E_best = E
                 print('New best:', end=' ')
                 S_new.display()
+                path.append((S_best, E_best))
         T = f(T)
         k += 1
     return S_best, E_best
