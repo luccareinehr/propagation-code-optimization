@@ -1,5 +1,7 @@
 import subprocess
 import re
+import os
+import threading
 
 class Solution:
     def __init__(self, olevel, simd, problem_size_x, problem_size_y, problem_size_z, nthreads, thrdblock_x, thrdblock_y, thrdblock_z) -> None:
@@ -13,12 +15,18 @@ class Solution:
         self.thrdblock_y = thrdblock_y
         self.thrdblock_z = thrdblock_z
 
-    def cost(self, verbose=False):
-        result = subprocess.run(['make', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'], stdout=subprocess.DEVNULL)
+    def cost(self, verbose=False, delete_file=True):
+        file_name = str(threading.get_ident())
+        file_name_with_ext = f'{file_name}.exe'
+        executable_path = f'bin/{file_name_with_ext}'
+
+        result = subprocess.run(['make', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'], 
+            stdout=subprocess.DEVNULL,
+            env=dict(os.environ, CONFIG_EXE_NAME=file_name_with_ext))
         if result.returncode != 0:
             raise Exception( f'Failed compiling: { result.returncode }' )
         
-        result = subprocess.run([f'bin/iso3dfd_dev13_cpu_{self.simd}.exe', 
+        result = subprocess.run([executable_path, 
             self.problem_size_x, self.problem_size_y, self.problem_size_z,
             self.nthreads, '100', self.thrdblock_x, self.thrdblock_y, self.thrdblock_z], capture_output=True)
         if result.returncode != 0:
@@ -33,6 +41,12 @@ class Solution:
             raise ValueError('throughput not a float')
         if verbose:
             print(output)
+        
+        if delete_file:
+            result = subprocess.run(['rm', executable_path])
+            if result.returncode != 0:
+                raise Exception( f'Failed deleting: { result.returncode }' )
+
         return throughput
 
     def get_neighbors(self):

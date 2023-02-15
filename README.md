@@ -15,8 +15,13 @@ and initialize it with `source .env`.
 
 `make upload`
 
-## Running
+## Running batch computation
 
-From the home dir, run
+From the home dir in the cluster, run
 
-`python src/main.py`
+```sbatch -p cpu_prod --exclusive -N 4 -n 128 --qos=16nodespu src/launch_batch.sh```
+
+Then, parse the results with 
+
+
+
