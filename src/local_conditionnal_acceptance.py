@@ -21,6 +21,8 @@ def local_conditionnal_acceptance(kmax, T0, f):
         if E_new > E_best or random.uniform(0, 1) < math.exp((E_best-E_new)/T):
             S = S_new
             E = E_new
+            print('New best or risky choice:', end=' ')
+            S_best.display()
             neighbors = S.get_neighbors()
             if E_new > E_best:
                 S_best = S
