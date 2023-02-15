@@ -10,7 +10,7 @@ Me = comm.Get_rank()
 
 if __name__ == "__main__":
     os.chdir('iso3dfd-st7')
-    best_solution, path = hill_climibing(10)
+    best_solution, path = hill_climibing(100)
     print('\n\nPath taken:')
     for sol in path:
         print(sol[1], end=' ')
@@ -18,18 +18,18 @@ if __name__ == "__main__":
 
     print('\n\nBest solution found:', end=' ')
     best_solution.display()
-    cost = best_solution.cost(verbose=True)
+    cost = best_solution.cost()
     print(cost)
 
     TabE = comm.gather(cost,root=0)
     TabS = comm.gather(best_solution,root=0)
     if (Me == 0):
-        print('Best solutions:')
-        for i in range(TabE):
+        print('\n\nBest solutions:')
+        for i in range(len(TabE)):
             TabS[i].display()
             print(TabE[i])
-        print('Best overall:')
-        Eopt = min(TabE)
+        print('\nBest overall:')
+        Eopt = max(TabE)
         idx = TabE.index(Eopt)
         Sopt = TabS[idx]
-        print(Sopt)
+        Sopt.display()

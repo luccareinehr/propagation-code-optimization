@@ -8,9 +8,7 @@ PROBLEM_SIZE_Y='256'
 PROBLEM_SIZE_Z='256'
 
 def hill_climibing(kmax):
-    # Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
-    Sbest = Solution('-O3', 'avx512', '256', '256', '256', '16', '32', '32', '32')
-
+    Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
     Ebest = Sbest.cost()
     neighbors = Sbest.get_neighbors()
     k = 0

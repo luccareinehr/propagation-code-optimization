@@ -1,5 +1,5 @@
 #!/bin/sh
-#SBATCH --time=5
+#SBATCH --time=15
 echo "================================="
-/usr/bin/mpirun -np 8 -map-by ppr:1:socket -rank-by socket -bind-to socket python3 src/main.py
+/usr/bin/mpirun -np 4 -map-by ppr:1:node:PE=16 -rank-by node python3 src/main.py
 echo "================================="
