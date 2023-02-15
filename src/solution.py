@@ -18,7 +18,7 @@ class Solution:
         if result.returncode != 0:
             raise Exception( f'Failed compiling: { result.returncode }' )
         
-        result = subprocess.run(['bin/iso3dfd_dev13_cpu_avx2.exe', 
+        result = subprocess.run([f'bin/iso3dfd_dev13_cpu_{self.simd}.exe', 
             self.problem_size_x, self.problem_size_y, self.problem_size_z,
             self.nthreads, '100', self.thrdblock_x, self.thrdblock_y, self.thrdblock_z], capture_output=True)
         if result.returncode != 0:
