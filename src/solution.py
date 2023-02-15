@@ -37,7 +37,7 @@ class Solution:
             if verbose:
                 print(output)
 
-        mean_throughput /= num_evaluations
+        mean_throughput = round(mean_throughput/num_evaluations, 2)
         return mean_throughput
 
     def get_neighbors(self):
