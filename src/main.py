@@ -1,9 +1,10 @@
 import os
 from hill_climbing import hill_climibing
+from local_conditionnal_acceptance import local_conditionnal_acceptance
 
 if __name__ == "__main__":
     os.chdir('iso3dfd-st7')
-    best_solution, path = hill_climibing(50)
+    best_solution, path = local_conditionnal_acceptance(50)
     print('\n\nPath taken:')
     for sol in path:
         print(sol[1], end=' ')
