@@ -84,7 +84,6 @@ def FifoAdd(Sbest, Ltabu, TabuSize=10):
     if len(Ltabu) == TabuSize:
         Ltabu.pop(0)
     Ltabu.append(Sbest)
-    print(Ltabu)
 
     print("Tabu List: [", end=" ")
     for i in Ltabu:
