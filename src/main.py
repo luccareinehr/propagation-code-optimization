@@ -7,7 +7,7 @@ if __name__ == "__main__":
     os.chdir('../../iso3dfd-st7')
     #Sinit = Solution('-O3', 'avx512', '256', '256', '256', '16', '32', '32', '32')
     #best_solution, path = hill_climibing(50, Sinit)
-    best_solution, cost, path = kangaroo(n=3, func=hill_climbing, kmax=10)
+    best_solution, cost, path = kangaroo(n=3, func=hill_climbing, kmax=20)
     print('\n\nPath taken:')
     for sol in path:
         print(sol[1], end=' ')

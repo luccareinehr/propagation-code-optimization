@@ -27,6 +27,8 @@ def kangaroo(n, func, *args, **kwargs):
             best_sol_cost = cost
             best_sol_path = path
 
+    print('[Kangaroo] Overall best:', end=' ')
+    best_sol.display()
     return best_sol, best_sol_cost, best_sol_path
     
 def gen_initial_states(n):
