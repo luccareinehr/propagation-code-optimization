@@ -26,6 +26,8 @@ def x_to_param(x):
 
 def cost_function(x):
     param = x_to_param(x)
+    print('solution :' + param['olevels'] + param['simds'] + param['problem_size_x']+param['problem_size_y'] +
+          param['problem_size_z'] + param['n_threads'] + param['thrdblock_x'] + param['thrdblock_y']+param['thrdblock_z'])
     sol = Solution(param['olevels'], param['simds'], param['problem_size_x'], param['problem_size_y'],
                    param['problem_size_z'], param['n_threads'], param['thrdblock_x'], param['thrdblock_y'], param['thrdblock_z'])
     return -sol.cost()
