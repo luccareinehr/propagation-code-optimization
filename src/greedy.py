@@ -1,4 +1,5 @@
 from solution import Solution
+import math
 
 
 def greedy(kmax):
@@ -21,7 +22,7 @@ def greedy(kmax):
             if E2 < E1:
                 S1 = S2
                 E1 = E2
-        if E1 < Ebest:
+        if E1 > Ebest:
             Sbest = S1
             Ebest = E1
             neighbors = Sbest.get_neighbors()
@@ -40,7 +41,7 @@ def greedy(kmax):
     return Sbest, path
 
 
-def improved_greedy(kmax):
+def tabu_greedy(kmax, N_Tabu):
     Sbest = Solution('-O3', 'avx512', '256', '256',
                      '256', '16', '32', '32', '32')
     Ebest = Sbest.cost()
@@ -48,27 +49,18 @@ def improved_greedy(kmax):
     k = 0
     newBetterS = True
 
-    visited = set()
-    neighbors = subset(neighbors)
+    visited = []
 
     print('Cost= ', Ebest, end=' ')
     path = [(Sbest, Ebest)]
     Sbest.display()
 
-    while k < kmax and len(neighbors) > 0 and newBetterS:
-        S1 = neighbors.pop()
-        E1 = S1.cost()
-        for S2 in neighbors:
-            E2 = S2.cost()
-            visited.update([S2])
-
-            if E2 < E1:
-                S1 = S2
-                E1 = E2
-        if E1 < Ebest:
+    while k < kmax and newBetterS:
+        S1, E1 = TabuFindBest(neighbors, visited)
+        if E1 > Ebest:
             Sbest = S1
             Ebest = E1
-            neighbors = subset(Sbest.get_neighbors(), visited)
+            visited = FifoAdd(Sbest, visited, N_Tabu)
 
             path.append((Sbest, Ebest))
 
@@ -76,21 +68,34 @@ def improved_greedy(kmax):
             Sbest.display()
             print('Actual Cost: ' + str(Ebest))
 
+            neighbors = Sbest.get_neighbors()
+
         else:
             newBetterS = False
             print("\nNo better element. End of the loop")
 
         k = k+1
+
     print("End of the loop via number of iterations")
     return Sbest, path
 
 
-def subset(neighborhood, visited=set()):
-    new_set = []
+def FifoAdd(Sbest, Ltabu, TabuSize=10):
+    if len(Ltabu) == TabuSize:
+        Ltabu.pop(0)
+    Ltabu.append(Sbest)
+    print("Tabu List: ", end=" ")
+    print(Ltabu)
+    return Ltabu
 
-    # Elimination of visited sets and use of prior knowledge conditions
-    for i in neighborhood:
-        if (i not in visited) and (1):  # Implement the prior knowledge conditions
-            new_set.append(i)
 
-    return new_set
+def TabuFindBest(Lneigh, Ltabu):
+    E1 = math.inf
+    S1 = None
+    for S2 in Lneigh:
+        if S2 not in Ltabu:
+            E2 = S2.cost()
+            if E2 > E1:
+                S1 = S2
+                E1 = E2
+    return S1, E1
