@@ -21,8 +21,8 @@ if __name__ == "__main__":
     cost = best_solution.cost()
     print(cost)
 
-    TabE = comm.gather(cost,root=0)
-    TabS = comm.gather(best_solution,root=0)
+    TabE = comm.gather(cost, root=0)
+    TabS = comm.gather(best_solution, root=0)
     if (Me == 0):
         print('\n\nBest solutions:')
         for i in range(len(TabE)):
