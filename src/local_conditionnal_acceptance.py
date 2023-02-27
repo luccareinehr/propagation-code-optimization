@@ -34,4 +34,4 @@ def local_conditionnal_acceptance(kmax, T0, f):
                 path.append((S_best, E_best))
         T = f(T)
         k += 1
-    return S_best, E_best
+    return S_best, path
