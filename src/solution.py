@@ -18,9 +18,9 @@ class Solution:
     def cost(self, verbose=False, delete_file=True, num_evaluations=3):
         file_name = str(threading.get_ident())
         file_name_with_ext = f'{file_name}.exe'
-        executable_path = f'bin/{file_name_with_ext}'
+        executable_path = f'iso3dfd-st7/bin/{file_name_with_ext}'
 
-        result = subprocess.run(['make', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'], 
+        result = subprocess.run(['make', '-C', 'iso3dfd-st7', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'], 
             stdout=subprocess.DEVNULL,
             env=dict(os.environ, CONFIG_EXE_NAME=file_name_with_ext))
         if result.returncode != 0:
