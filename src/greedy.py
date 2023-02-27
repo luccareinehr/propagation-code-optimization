@@ -1,49 +1,59 @@
 from solution import Solution
 import math
 
+import os
+import sys
+import subprocess
+from algorithm import Algorithm
+from random_solution import get_random_solution
 
-def greedy(kmax):
-    Sbest = Solution('-O3', 'avx512', '256', '256',
-                     '256', '16', '32', '32', '32')
-    Ebest = Sbest.cost()
-    neighbors = Sbest.get_neighbors()
-    k = 0
-    newBetterS = True
+PROBLEM_SIZE_X='256'
+PROBLEM_SIZE_Y='256'
+PROBLEM_SIZE_Z='256'
 
-    print('Cost= ', Ebest, end=' ')
-    path = [(Sbest, Ebest)]
-    Sbest.display()
+class Greedy(Algorithm):
+    def __init__(self, args) -> None:
+        super().__init__(args)
 
-    while k < kmax and len(neighbors) > 0 and newBetterS:
-        S1 = neighbors.pop()
-        E1 = S1.cost()
-        for S2 in neighbors:
-            E2 = S2.cost()
-            if E2 < E1:
-                S1 = S2
-                E1 = E2
-        if E1 > Ebest:
-            Sbest = S1
-            Ebest = E1
-            neighbors = Sbest.get_neighbors()
-            path.append((Sbest, Ebest))
+    def run(self, kmax):
+        Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
+        Ebest = Sbest.cost()
+        neighbors = Sbest.get_neighbors()
+        k = 0
+        newBetterS = True
 
-            print('New best:', end=' ')
-            Sbest.display()
-            print('Actual Cost: ' + str(Ebest))
+        print('Cost= ', Ebest, end=' ')
+        path = [(Sbest, Ebest)]
+        Sbest.display()
 
-        else:
-            newBetterS = False
-            print("\nNo better element. End of the loop")
+        while k < kmax and len(neighbors) > 0 and newBetterS:
+            S1 = neighbors.pop()
+            E1 = S1.cost()
+            for S2 in neighbors:
+                E2 = S2.cost()
+                if E2 < E1:
+                    S1 = S2
+                    E1 = E2
+            if E1 > Ebest:
+                Sbest = S1
+                Ebest = E1
+                neighbors = Sbest.get_neighbors()
+                path.append((Sbest, Ebest))
 
-        k = k+1
-    print("End of the loop via number of iterations")
-    return Sbest, path
+                print('New best:', end=' ')
+                Sbest.display()
+                print('Actual Cost: ' + str(Ebest))
 
+            else:
+                newBetterS = False
+                print("\nNo better element. End of the loop")
+
+            k = k+1
+        print("End of the loop via number of iterations")
+        return Sbest, path    
 
 def tabu_greedy(kmax, N_Tabu):
-    Sbest = Solution('-O3', 'avx512', '256', '256',
-                     '256', '16', '32', '32', '32')
+    Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
     Ebest = Sbest.cost()
     neighbors = Sbest.get_neighbors()
     k = 0

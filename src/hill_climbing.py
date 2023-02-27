@@ -19,12 +19,7 @@ class HillClimbing(Algorithm):
         super().__init__(args)
         self.comm = MPI.COMM_WORLD        
 
-    def run(self, num_steps):
-        if self.args.phase == 'deploy':
-            args = ' '.join(sys.argv)
-            res = subprocess.run(f'/usr/bin/mpirun -np 1 -map-by ppr:1:node:PE=16 python {args} --phase run',shell=True, env=os.environ)
-            return
-        
+    def run(self, num_steps):        
         Me = self.comm.Get_rank()
         best_solution, path = self.single_run(num_steps)
         print('\n\nPath taken:')

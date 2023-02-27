@@ -1,9 +1,9 @@
 from hill_climbing import HillClimbing
-from successive_descents import SuccessiveDescents
+from greedy import Greedy
 
 ALGORITHMS = {
     'hill_climbing': HillClimbing,
-    'successive_descents': SuccessiveDescents,
+    'greedy': Greedy,
 }
 
 def get_algorithm(algorithm_name):
