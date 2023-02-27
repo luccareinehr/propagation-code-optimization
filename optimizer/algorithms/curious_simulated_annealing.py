@@ -64,7 +64,7 @@ def curious_simulated_annealing(n_iter, init_state=None, n_particles=6, temperat
         best_particle = particles[np.argmin([p.cost() for p in particles])]
         best_energy = best_particle.cost()
 
-        if best_energy < current_energy:
+        if best_energy > current_energy:
             current_state = best_particle
             current_energy = best_energy
             path.append((current_state, current_energy))
