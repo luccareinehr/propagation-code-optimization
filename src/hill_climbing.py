@@ -1,11 +1,19 @@
 from solution import Solution
 import random
 
+from random_solution import get_random_solution
+
+PROBLEM_SIZE_X='256'
+PROBLEM_SIZE_Y='256'
+PROBLEM_SIZE_Z='256'
+
 def hill_climibing(kmax):
-    Sbest = Solution('-O3', 'avx512', '256', '256', '256', '16', '32', '32', '32')
+    Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
     Ebest = Sbest.cost()
     neighbors = Sbest.get_neighbors()
     k = 0
+    print('Initial:', end=' ')
+    Sbest.display()
     print('Cost= ', Ebest, end=' ')
     path = [(Sbest, Ebest)]
     Sbest.display()
@@ -18,9 +26,9 @@ def hill_climibing(kmax):
         S_new.display()
         if E_new > Ebest:
             print('New best:', end=' ')
-            Sbest.display()
             Ebest = E_new
             Sbest = S_new
+            Sbest.display()
             path.append((Sbest, Ebest))
             neighbors = Sbest.get_neighbors()
         k += 1
