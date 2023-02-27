@@ -84,13 +84,23 @@ def FifoAdd(Sbest, Ltabu, TabuSize=10):
     if len(Ltabu) == TabuSize:
         Ltabu.pop(0)
     Ltabu.append(Sbest)
-    print("Tabu List: ", end=" ")
     print(Ltabu)
+
+    print("Tabu List: [", end=" ")
+    for i in Ltabu:
+        if i == Ltabu[-1]:
+            print(Sbest.olevel, Sbest.simd, Sbest.problem_size_x, Sbest.problem_size_y, Sbest.problem_size_z,
+                  Sbest.nthreads, Sbest.thrdblock_x, Sbest.thrdblock_y, Sbest.thrdblock_z, end=' ')
+            print(']')
+        else:
+            print(Sbest.olevel, Sbest.simd, Sbest.problem_size_x, Sbest.problem_size_y, Sbest.problem_size_z,
+                  Sbest.nthreads, Sbest.thrdblock_x, Sbest.thrdblock_y, Sbest.thrdblock_z, end=', ')
+
     return Ltabu
 
 
 def TabuFindBest(Lneigh, Ltabu):
-    E1 = math.inf
+    E1 = -math.inf
     S1 = None
     for S2 in Lneigh:
         if S2 not in Ltabu:
