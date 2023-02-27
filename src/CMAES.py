@@ -35,7 +35,7 @@ def cost_function(x):
 S0 = Solution('-O3', 'avx512', '256', '256',
               '256', '16', '48', '32', '32')
 x0 = 6 * [0]  # initial solution
-sigma0 = 1    # initial standard deviation to sample new solutions
+sigma0 = 0.5   # initial standard deviation to sample new solutions
 
 xopt, es = cma.fmin2(cost_function, x0, sigma0, {'bounds': [0, [
                      2.99, 2.99, max_threads//8, max_thrdblock_x//8, max_thrdblock_y//8, max_thrdblock_z//8]]})
