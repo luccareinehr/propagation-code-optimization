@@ -1,5 +1,7 @@
 import subprocess
 import re
+import threading
+import os
 
 
 class Solution:
@@ -14,29 +16,42 @@ class Solution:
         self.thrdblock_y = thrdblock_y
         self.thrdblock_z = thrdblock_z
 
-    def cost(self, verbose=False):
-        result = subprocess.run(
-            ['make', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'], stdout=subprocess.DEVNULL)
+    def cost(self, verbose=False, delete_file=True, num_evaluations=3):
+        file_name = str(threading.get_ident())
+        file_name_with_ext = f'{file_name}.exe'
+        executable_path = f'bin/{file_name_with_ext}'
+
+        result = subprocess.run(['make', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'],
+                                stdout=subprocess.DEVNULL,
+                                env=dict(os.environ, CONFIG_EXE_NAME=file_name_with_ext))
         if result.returncode != 0:
             raise Exception(f'Failed compiling: { result.returncode }')
 
-        result = subprocess.run(['bin/iso3dfd_dev13_cpu_avx2.exe',
-                                 self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                                 self.nthreads, '100', self.thrdblock_x, self.thrdblock_y, self.thrdblock_z], capture_output=True)
-        # change for filename
-        if result.returncode != 0:
-            raise Exception(f'Failed executing: { result.returncode }')
+        mean_throughput = 0
+        for _ in range(num_evaluations):
+            result = subprocess.run([executable_path,
+                                     self.problem_size_x, self.problem_size_y, self.problem_size_z,
+                                     self.nthreads, '100', self.thrdblock_x, self.thrdblock_y, self.thrdblock_z], capture_output=True)
+            if result.returncode != 0:
+                raise Exception(f'Failed executing: { result.returncode }')
 
-        output = result.stdout
-        m = re.search('throughput:\s+([\d\.]+)', str(output))
-        throughput = m.group(1)
-        try:
-            throughput = float(throughput)
-        except:
-            raise ValueError('throughput not a float')
-        if verbose:
-            print(output)
-        return throughput
+            output = result.stdout
+            m = re.search('throughput:\s+([\d\.]+)', str(output))
+            throughput = m.group(1)
+            try:
+                mean_throughput += float(throughput)
+            except:
+                raise ValueError('throughput not a float')
+            if verbose:
+                print(output)
+
+        if delete_file:
+            result = subprocess.run(['rm', executable_path])
+            if result.returncode != 0:
+                raise Exception(f'Failed deleting: { result.returncode }')
+
+        mean_throughput = round(mean_throughput/num_evaluations, 2)
+        return mean_throughput
 
     def get_neighbors(self):
         neigh = set()
