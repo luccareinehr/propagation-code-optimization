@@ -15,14 +15,11 @@ and initialize it with `source .env`.
 
 `make upload`
 
-## Running batch computation
+## Deployments
 
-To test in one node:
+```python3 src/optimizer.py --algorithm hill_climbing --steps 4```
 
-```/usr/bin/mpirun -np 2 -map-by ppr:1:socket:PE=8 python src/main.py```
+Hill Climbing: The deploy phase runs mpirun with 1 process with access to 16 cores.
 
-To deploy in batch
-
-```sbatch -p cpu_prod --exclusive -N 4 -n 128 --qos=16nodespu src/launch_batch.sh```
-
+Successive Descents: The deploy phases run sbatch with 4 nodes, each one with one hill climbing in run phase.
 
