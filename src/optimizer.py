@@ -24,10 +24,37 @@ def make_deterministic(seed):
 
 
 def run_algorithm(args, evaluation_session):
-    algorithm_class = get_algorithm(args.algorithm)
-    algorithm = algorithm_class(args, hparams)
-    algorithm.run(args.steps, evaluation_session)
+    Me = comm.Get_rank()
 
+    algorithm_class = get_algorithm(args.algorithm)
+    algorithm = algorithm_class(hparams, args.problem_size)
+    best_solution, best_cost, path = algorithm.run(args.steps, evaluation_session)
+
+    
+    print('\n\nPath taken:')
+    for sol in path:
+        print(sol[1], end=' ')
+        sol[0].display()
+
+    print('\n\nBest solution found:', end=' ')
+    best_solution.display()
+    print(best_cost)
+
+    TabE = comm.gather(best_cost,root=0)
+    TabS = comm.gather(best_solution,root=0)
+    total_runs = comm.reduce(evaluation_session.run_counter,op=MPI.SUM, root=0)
+    if (Me == 0):
+        print('\n\nBest solutions:')
+        for i in range(len(TabE)):
+            TabS[i].display()
+            print(TabE[i])
+        print('\nBest overall:')
+        Eopt = max(TabE)
+        idx = TabE.index(Eopt)
+        Sopt = TabS[idx]
+        Sopt.display()
+        print(Eopt)
+        print('Total cost evaluations:', total_runs)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Optimizer Launcher')
@@ -39,6 +66,7 @@ if __name__ == "__main__":
                         help='Run in parallel with different initializations')
     parser.add_argument('--hparams', type=str, default='{}',
                         help='JSON-serialized hparams dict')
+    parser.add_argument('--problem_size', type=int, nargs=3, default=[256, 256, 256], help='Problem size')
 
     # usually you dont need to change this
     parser.add_argument('--phase', type=str,
@@ -52,7 +80,7 @@ if __name__ == "__main__":
         print('\t{}: {}'.format(k, v))
 
     print('Hyperparameters:')
-    for k, v in sorted(vars(args).items()):
+    for k, v in sorted(hparams.items()):
         print('\t{}: {}'.format(k, v))
 
     make_deterministic(args.seed)
