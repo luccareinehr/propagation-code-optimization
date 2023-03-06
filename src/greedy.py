@@ -12,8 +12,8 @@ PROBLEM_SIZE_Y='256'
 PROBLEM_SIZE_Z='256'
 
 class Greedy(Algorithm):
-    def __init__(self, args) -> None:
-        super().__init__(args)
+    def __init__(self, args, hparams) -> None:
+        super().__init__(args, hparams)
 
     def run(self, kmax):
         Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
@@ -52,42 +52,48 @@ class Greedy(Algorithm):
         print("End of the loop via number of iterations")
         return Sbest, path    
 
-def tabu_greedy(kmax, N_Tabu):
-    Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
-    Ebest = Sbest.cost()
-    neighbors = Sbest.get_neighbors()
-    k = 0
-    newBetterS = True
 
-    visited = []
+class TabuGreedy(Algorithm):
+    def __init__(self, args, hparams) -> None:
+        super().__init__(args, hparams)
 
-    print('Cost= ', Ebest, end=' ')
-    path = [(Sbest, Ebest)]
-    Sbest.display()
+    def run(self, kmax):
+        N_Tabu = self.hparams['n_tabu']
+        Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
+        Ebest = Sbest.cost()
+        neighbors = Sbest.get_neighbors()
+        k = 0
+        newBetterS = True
 
-    while k < kmax and newBetterS:
-        S1, E1 = TabuFindBest(neighbors, visited)
-        if E1 > Ebest:
-            Sbest = S1
-            Ebest = E1
-            visited = FifoAdd(Sbest, visited, N_Tabu)
+        visited = []
 
-            path.append((Sbest, Ebest))
+        print('Cost= ', Ebest, end=' ')
+        path = [(Sbest, Ebest)]
+        Sbest.display()
 
-            print('New best:', end=' ')
-            Sbest.display()
-            print('Actual Cost: ' + str(Ebest))
+        while k < kmax and newBetterS:
+            S1, E1 = TabuFindBest(neighbors, visited)
+            if E1 > Ebest:
+                Sbest = S1
+                Ebest = E1
+                visited = FifoAdd(Sbest, visited, N_Tabu)
 
-            neighbors = Sbest.get_neighbors()
+                path.append((Sbest, Ebest))
 
-        else:
-            newBetterS = False
-            print("\nNo better element. End of the loop")
+                print('New best:', end=' ')
+                Sbest.display()
+                print('Actual Cost: ' + str(Ebest))
 
-        k = k+1
+                neighbors = Sbest.get_neighbors()
 
-    print("End of the loop via number of iterations")
-    return Sbest, path
+            else:
+                newBetterS = False
+                print("\nNo better element. End of the loop")
+
+            k = k+1
+
+        print("End of the loop via number of iterations")
+        return Sbest, path
 
 
 def FifoAdd(Sbest, Ltabu, TabuSize=10):

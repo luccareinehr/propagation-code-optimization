@@ -15,8 +15,8 @@ import os
 import sys
 
 class HillClimbing(Algorithm):
-    def __init__(self, args) -> None:
-        super().__init__(args)
+    def __init__(self, args, hparams) -> None:
+        super().__init__(args, hparams)
         self.comm = MPI.COMM_WORLD        
 
     def run(self, num_steps):        
