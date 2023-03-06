@@ -21,7 +21,7 @@ class CMAESAlgorithm(Algorithm):
             'maxiter': kmax,
         }
         # TODO: pass parallel_objective instead of cost_function
-        x, Ebest = cma.fmin2(
+        x, es = cma.fmin2(
             lambda x : self.cost_function(x), 
             x0, 
             sigma0, 
@@ -30,7 +30,7 @@ class CMAESAlgorithm(Algorithm):
         Sbest = self.x_to_solution(x)
         # TODO: how to manage path for CMAES?
         path = [ ]
-        return Sbest, Ebest, path
+        return Sbest, Sbest.cost(), path
 
     def cost_function(self, x):
         solution = self.x_to_solution(x)
