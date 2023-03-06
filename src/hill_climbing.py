@@ -16,6 +16,7 @@ class HillClimbing(Algorithm):
         self.comm = MPI.COMM_WORLD
         
     def run(self, num_steps):
+        self.logger.write_info('Starting hill_climbing')
         Sbest = get_random_solution(self.problem_size)
         Ebest = Sbest.cost()
         neighbors = Sbest.get_neighbors()
