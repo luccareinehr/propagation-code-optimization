@@ -6,7 +6,7 @@ from algorithm import Algorithm
 
 
 def acceptance_func(energy_diff, temp):
-    return 1 / (1 + energy_diff / temp)
+    return 1 / (1 - energy_diff / temp) # cost is good, so we need to invert the sign
 
 
 class CuriousSimulatedAnnealing(Algorithm): #(n_iter, init_state=None, n_particles=6, temperature_schedule=None)
