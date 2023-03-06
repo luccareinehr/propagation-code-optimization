@@ -8,8 +8,8 @@ from algorithm import Algorithm
 from random_solution import get_random_solution
 
 class Greedy(Algorithm):
-    def __init__(self, hparams, problem_size) -> None:
-        super().__init__(hparams, problem_size)
+    def __init__(self, hparams, problem_size, logger) -> None:
+        super().__init__(hparams, problem_size, logger)
 
     def run(self, kmax):
         Sbest = get_random_solution(self.problem_size)
@@ -17,17 +17,17 @@ class Greedy(Algorithm):
         neighbors = Sbest.get_neighbors()
         k = 0
         newBetterS = True
-
-        print('Cost= ', Ebest, end=' ')
         path = [(Sbest, Ebest)]
-        Sbest.display()
+        self.logger.write_msg(
+            k, Ebest, Sbest.get_compilation_flags(), flair='Initial'
+        )
 
         while k < kmax and len(neighbors) > 0 and newBetterS:
             S1 = neighbors.pop()
             E1 = S1.cost()
             for S2 in neighbors:
                 E2 = S2.cost()
-                if E2 < E1:
+                if E2 > E1:
                     S1 = S2
                     E1 = E2
             if E1 > Ebest:
