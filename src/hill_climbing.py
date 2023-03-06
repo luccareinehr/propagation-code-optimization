@@ -5,7 +5,7 @@ from solution import Solution
 import random
 
 
-from random_solution import get_random_solution
+from solution_space import get_random_solution
 from algorithm import Algorithm
 
 from mpi4py import MPI

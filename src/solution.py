@@ -21,7 +21,7 @@ class Solution:
 
         self.simulator.sol_increase()
 
-    def cost(self, verbose=False, delete_file=True, num_evaluations=3):
+    def cost(self, verbose=False, delete_file=True, num_evaluations=1):
 
         self.simulator.run_increase(num_evaluations)  # Increases in num_evaluations the counter of runs
 

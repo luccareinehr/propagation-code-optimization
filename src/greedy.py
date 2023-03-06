@@ -5,7 +5,7 @@ import os
 import sys
 import subprocess
 from algorithm import Algorithm
-from random_solution import get_random_solution
+from solution_space import get_random_solution
 
 
 class Greedy(Algorithm):
