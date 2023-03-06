@@ -13,7 +13,6 @@ import sys
 class HillClimbing(Algorithm):
     def __init__(self, hparams, problem_size, logger) -> None:
         super().__init__(hparams, problem_size, logger)
-        self.comm = MPI.COMM_WORLD
         
     def run(self, num_steps):
         self.logger.write_info('Starting hill_climbing')
