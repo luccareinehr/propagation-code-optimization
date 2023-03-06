@@ -40,3 +40,4 @@ if __name__ == "__main__":
     sigma0 = 1   # initial standard deviation to sample new solutions
     xopt, es = cma.fmin2(cost_function, x0, sigma0, {'bounds': [0, [
         2.99, 2.99, max_threads//8, max_thrdblock_x//8, max_thrdblock_y//8, max_thrdblock_z//8]]})
+S
