@@ -12,6 +12,10 @@ def print_args(args):
     for k, v in sorted(vars(args).items()):
         if type(v) == bool:
             s += f'--{k} ' if v else ''
+        elif type(v) == list:
+            str_v = [str(x) for x in v]
+            str_v = ' '.join(str_v)
+            s += f'--{k} {str_v} '
         elif k=='hparams':
             s += f'--{k} \'{v}\' '
         else:
