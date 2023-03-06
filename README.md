@@ -29,3 +29,7 @@ Flag `-kangaroo`: runs 4 instances in parallel with different initializations.
 Flag `-parallel`: runs 4 instances to calculate the cost function in parallel. It is only not available for Hill Climbing.
 
 We recommend using parallel for all methods in which it is available.
+
+## FAQ
+
+Installation of CMA: Check if the pip used to install is the same as the Python being used to run. Sometimes we need to use `/usr/bin/pip` (TODO: avoid this).
