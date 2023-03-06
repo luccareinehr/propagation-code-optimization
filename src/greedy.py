@@ -33,7 +33,7 @@ class Greedy(Algorithm):
             E1 = S1.cost()
             for S2 in neighbors:
                 E2 = S2.cost()
-                if E2 < E1:
+                if E2 > E1:
                     S1 = S2
                     E1 = E2
             if E1 > Ebest:
