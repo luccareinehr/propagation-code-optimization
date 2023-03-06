@@ -6,11 +6,11 @@ import subprocess
 import json
 
 import numpy as np 
-from algorithm_registry import get_algorithm
-from deployment import deploy_kangaroo, deploy_single
+
+from optimizer.algorithms import get_algorithm
+from optimizer.deployment import deploy_kangaroo, deploy_single
 
 from mpi4py import MPI
-comm = MPI.COMM_WORLD
 
 def make_deterministic(seed): 
     '''Makes that each process has a different real seed'''
@@ -20,11 +20,8 @@ def make_deterministic(seed):
     np.random.seed(real_seed)
     print(f'\nreal seed: {real_seed}\n')    
         
-def run_algorithm(args):
+def run_algorithm(algorithm, args, comm):
     Me = comm.Get_rank()
-
-    algorithm_class = get_algorithm(args.algorithm)
-    algorithm = algorithm_class(hparams, args.problem_size)
     best_solution, best_cost, path = algorithm.run(args.steps)
     
     print('\n\nPath taken:')
@@ -51,6 +48,8 @@ def run_algorithm(args):
         print(Eopt)
 
 if __name__ == "__main__":
+    comm = MPI.COMM_WORLD
+
     parser = argparse.ArgumentParser(description='Optimizer Launcher')
     parser.add_argument('--algorithm', type=str, default='hill_climbing')
     parser.add_argument('--steps', type=int, default=10, help='Number of steps')
@@ -69,8 +68,11 @@ if __name__ == "__main__":
     for k, v in sorted(vars(args).items()):
         print('\t{}: {}'.format(k, v))
     
+    algorithm_class = get_algorithm(args.algorithm)
+    algorithm = algorithm_class(hparams, args.problem_size)
+
     print('Hyperparameters:')
-    for k, v in sorted(hparams.items()):
+    for k, v in sorted(algorithm.hparams.items()):
         print('\t{}: {}'.format(k, v))
 
     make_deterministic(args.seed)
@@ -80,4 +82,4 @@ if __name__ == "__main__":
     elif args.phase == 'deploy' and not args.kangaroo:
         deploy_single(args, sys.argv[0])
     else: # phase is run
-        run_algorithm(args)
+        run_algorithm(algorithm, args, comm)

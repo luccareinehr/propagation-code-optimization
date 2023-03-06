@@ -1,6 +1,6 @@
 import numpy as np
 
-from solution import Solution
+from optimizer.solution import Solution
 
 def get_random_solution(problem_size):
     o_levels = ['-O2', '-O3', '-Ofast']

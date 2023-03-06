@@ -17,8 +17,8 @@ and initialize it with `source .env`.
 
 ## Deployments
 
-```python3 src/optimizer.py --algorithm hill_climbing --steps 4```
-```python3 src/optimizer.py --algorithm tabu_greedy --steps 4 --hparams '{"n_tabu":5}'```
+```python3 -m optimizer.main --algorithm hill_climbing --steps 4```
+```python3 -m optimizer.main --algorithm tabu_greedy --steps 4 --hparams '{"n_tabu":5}'```
 
 Hill Climbing: The deploy phase runs mpirun with 1 process with access to 16 cores.
 

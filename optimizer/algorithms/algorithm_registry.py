@@ -1,6 +1,6 @@
-from hill_climbing import HillClimbing
-from greedy import Greedy, TabuGreedy
-from local_conditionnal_acceptance import LocalConditionnalAcceptance
+from optimizer.algorithms.hill_climbing import HillClimbing
+from optimizer.algorithms.greedy import Greedy, TabuGreedy
+from optimizer.algorithms.local_conditionnal_acceptance import LocalConditionnalAcceptance
 
 ALGORITHMS = {
     'hill_climbing': HillClimbing,
