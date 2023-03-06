@@ -19,9 +19,9 @@ class Solution:
     def cost(self, verbose=False, delete_file=True, num_evaluations=3):
         file_name = str(threading.get_ident())
         file_name_with_ext = f'{file_name}.exe'
-        executable_path = f'bin/{file_name_with_ext}'
+        executable_path = f'iso3dfd-st7/bin/{file_name_with_ext}'
 
-        result = subprocess.run(['make', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'],
+        result = subprocess.run(['make', '-C', 'iso3dfd-st7', f'Olevel={self.olevel}', f'simd={self.simd}', 'last'],
                                 stdout=subprocess.DEVNULL,
                                 env=dict(os.environ, CONFIG_EXE_NAME=file_name_with_ext))
         if result.returncode != 0:
@@ -30,8 +30,13 @@ class Solution:
         mean_throughput = 0
         for _ in range(num_evaluations):
             result = subprocess.run([executable_path,
-                                     self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                                     self.nthreads, '100', self.thrdblock_x, self.thrdblock_y, self.thrdblock_z], capture_output=True)
+                                     str(self.problem_size_x),
+                                     str(self.problem_size_y),
+                                     str(self.problem_size_z),
+                                     str(self.nthreads), '100',
+                                     str(self.thrdblock_x),
+                                     str(self.thrdblock_y),
+                                     str(self.thrdblock_z)], capture_output=True)
             if result.returncode != 0:
                 raise Exception(f'Failed executing: { result.returncode }')
 
@@ -68,27 +73,27 @@ class Solution:
             neigh.add((self.olevel, simd, self.problem_size_x, self.problem_size_y, self.problem_size_z,
                       self.nthreads, self.thrdblock_x, self.thrdblock_y, self.thrdblock_z))
 
-        if int(self.thrdblock_x) > 16:
+        if self.thrdblock_x > 16:
+            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
+                      self.problem_size_z, self.nthreads, self.thrdblock_x//2, self.thrdblock_y, self.thrdblock_z))
+        if self.thrdblock_y > 1:
             neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                      self.nthreads, str(int(self.thrdblock_x)//2), self.thrdblock_y, self.thrdblock_z))
-        if int(self.thrdblock_y) > 1:
-            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                      self.nthreads,  self.thrdblock_x, str(int(self.thrdblock_y)//2), self.thrdblock_z))
-        if int(self.thrdblock_z) > 1:
-            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                      self.nthreads, self.thrdblock_x, self.thrdblock_y, str(int(self.thrdblock_z)//2)))
-        if int(self.nthreads) > 1:
-            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z, str(
-                int(self.nthreads)//2), self.thrdblock_x, self.thrdblock_y, self.thrdblock_z))
-        neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                  self.nthreads, str(int(self.thrdblock_x)*2), self.thrdblock_y, self.thrdblock_z))
-        neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                  self.nthreads, self.thrdblock_x, str(int(self.thrdblock_y)*2), self.thrdblock_z))
-        neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z,
-                  self.nthreads, self.thrdblock_x, self.thrdblock_y, str(int(self.thrdblock_z)*2)))
-        if int(self.nthreads) <= 32:
-            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z, str(
-                int(self.nthreads)*2), self.thrdblock_x, self.thrdblock_y, self.thrdblock_z))
+                      self.nthreads,  self.thrdblock_x, self.thrdblock_y//2, self.thrdblock_z))
+        if self.thrdblock_z > 1:
+            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
+                      self.problem_size_z, self.nthreads, self.thrdblock_x, self.thrdblock_y, self.thrdblock_z//2))
+        if self.nthreads > 1:
+            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
+                      self.problem_size_z, self.nthreads//2, self.thrdblock_x, self.thrdblock_y, self.thrdblock_z))
+        neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
+                  self.problem_size_z, self.nthreads, self.thrdblock_x*2, self.thrdblock_y, self.thrdblock_z))
+        neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
+                  self.problem_size_z, self.nthreads, self.thrdblock_x, self.thrdblock_y*2, self.thrdblock_z))
+        neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
+                  self.problem_size_z, self.nthreads, self.thrdblock_x, self.thrdblock_y, self.thrdblock_z*2))
+        if self.nthreads <= 32:
+            neigh.add((self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
+                      self.problem_size_z, self.nthreads*2, self.thrdblock_x, self.thrdblock_y, self.thrdblock_z))
         return [Solution(*n) for n in neigh]
 
     def display(self):
