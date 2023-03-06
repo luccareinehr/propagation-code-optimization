@@ -7,16 +7,12 @@ import subprocess
 from algorithm import Algorithm
 from random_solution import get_random_solution
 
-PROBLEM_SIZE_X='256'
-PROBLEM_SIZE_Y='256'
-PROBLEM_SIZE_Z='256'
-
 class Greedy(Algorithm):
-    def __init__(self, args, hparams) -> None:
-        super().__init__(args, hparams)
+    def __init__(self, hparams, problem_size) -> None:
+        super().__init__(hparams, problem_size)
 
     def run(self, kmax):
-        Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
+        Sbest = get_random_solution(self.problem_size)
         Ebest = Sbest.cost()
         neighbors = Sbest.get_neighbors()
         k = 0
@@ -50,16 +46,16 @@ class Greedy(Algorithm):
 
             k = k+1
         print("End of the loop via number of iterations")
-        return Sbest, path    
+        return Sbest, Ebest, path    
 
 
 class TabuGreedy(Algorithm):
-    def __init__(self, args, hparams) -> None:
-        super().__init__(args, hparams)
+    def __init__(self, hparams, problem_size) -> None:
+        super().__init__(hparams, problem_size)
 
     def run(self, kmax):
         N_Tabu = self.hparams['n_tabu']
-        Sbest = get_random_solution(PROBLEM_SIZE_X, PROBLEM_SIZE_Y, PROBLEM_SIZE_Z)
+        Sbest = get_random_solution(self.problem_size)
         Ebest = Sbest.cost()
         neighbors = Sbest.get_neighbors()
         k = 0
@@ -93,7 +89,7 @@ class TabuGreedy(Algorithm):
             k = k+1
 
         print("End of the loop via number of iterations")
-        return Sbest, path
+        return Sbest, Ebest, path
 
 
 def FifoAdd(Sbest, Ltabu, TabuSize=10):
