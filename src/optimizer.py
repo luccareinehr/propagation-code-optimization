@@ -9,6 +9,8 @@ import numpy as np
 from algorithm_registry import get_algorithm
 from deployment import deploy_kangaroo, deploy_single
 
+from logger import Logger
+
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
 
@@ -26,6 +28,8 @@ def run_algorithm(args):
     algorithm.run(args.steps)
 
 if __name__ == "__main__":
+    logger = Logger(process_id=comm.Get_rank(), logfile="mytest.log")
+
     parser = argparse.ArgumentParser(description='Optimizer Launcher')
     parser.add_argument('--algorithm', type=str, default='hill_climbing')
     parser.add_argument('--steps', type=int, default=10, help='Number of steps')
