@@ -100,5 +100,7 @@ class CuriousSimulatedAnnealing(Algorithm): #(n_iter, init_state=None, n_particl
             temp = self.f(temp)
             k += 1
 
+        if my_rank != 0:
+            return None, None, None
         return current_state, current_energy, path
 
