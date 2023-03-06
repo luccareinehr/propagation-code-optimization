@@ -11,8 +11,8 @@ class Greedy(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
         super().__init__(hparams, problem_size)
 
-    def run(self, kmax):
-        Sbest = get_random_solution(self.problem_size)
+    def run(self, kmax, evaluation_session):
+        Sbest = get_random_solution(self.problem_size, evaluation_session)
         Ebest = Sbest.cost()
         neighbors = Sbest.get_neighbors()
         k = 0
@@ -27,7 +27,7 @@ class Greedy(Algorithm):
             E1 = S1.cost()
             for S2 in neighbors:
                 E2 = S2.cost()
-                if E2 < E1:
+                if E2 > E1:
                     S1 = S2
                     E1 = E2
             if E1 > Ebest:
@@ -46,16 +46,16 @@ class Greedy(Algorithm):
 
             k = k+1
         print("End of the loop via number of iterations")
-        return Sbest, Ebest, path    
+        return Sbest, Ebest, path
 
 
 class TabuGreedy(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
         super().__init__(hparams, problem_size)
 
-    def run(self, kmax):
+    def run(self, kmax, evaluation_session):
         N_Tabu = self.hparams['n_tabu']
-        Sbest = get_random_solution(self.problem_size)
+        Sbest = get_random_solution(self.problem_size, evaluation_session)
         Ebest = Sbest.cost()
         neighbors = Sbest.get_neighbors()
         k = 0
