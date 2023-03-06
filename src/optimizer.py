@@ -26,7 +26,7 @@ def run_algorithm(args):
     Me = comm.Get_rank()
 
     algorithm_class = get_algorithm(args.algorithm)
-    algorithm = algorithm_class(hparams, args.problem_size)
+    algorithm = algorithm_class(hparams, args.problem_size, logger)
     best_solution, best_cost, path = algorithm.run(args.steps)
     
     print('\n\nPath taken:')
