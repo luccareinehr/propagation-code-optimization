@@ -7,6 +7,7 @@ import subprocess
 from algorithm import Algorithm
 from random_solution import get_random_solution
 
+
 class Greedy(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
         super().__init__(hparams, problem_size)
@@ -90,6 +91,52 @@ class TabuGreedy(Algorithm):
 
         print("End of the loop via number of iterations")
         return Sbest, Ebest, path
+
+
+class parallelgreedy(Algorithm):
+    def __init__(self, hparams, problem_size) -> None:
+        super().__init__(hparams, problem_size)
+
+    def run(self, kmax):
+
+        Sbest = get_random_solution(self.problem_size)
+        Ebest = Sbest.cost()
+        neighbors = Sbest.get_neighbors()
+        n = len(neighbors)
+        k = 0
+        newBetterS = True
+        tabE = [0 for i in range(n)]
+        print('Cost= ', Ebest, end=' ')
+        path = [(Sbest, Ebest)]
+        Sbest.display()
+
+        while k < kmax and n > 0 and newBetterS:
+            for i in range(n):
+                tabE[i] = neighbors[i].cost()
+
+            j = 0
+            for i in range(n):
+                if tabE[i] > tabE[j]:
+                    j = i
+            E1 = tabE[j]
+            S1 = neighbors[j]
+
+            if E1 > Ebest:
+                Sbest = S1
+                Ebest = E1
+                neighbors = Sbest.get_neighbors()
+                path.append((Sbest, Ebest))
+                print('New best:', end=' ')
+                Sbest.display()
+                print('Actual Cost: ' + str(Ebest))
+
+            else:
+                newBetterS = False
+                print("\nNo better element. End of the loop")
+
+            k = k+1
+        print("End of the loop via number of iterations")
+        return Sbest, path
 
 
 def FifoAdd(Sbest, Ltabu, TabuSize=10):

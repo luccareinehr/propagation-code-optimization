@@ -4,6 +4,7 @@ import subprocess
 from solution import Solution
 import random
 
+
 from random_solution import get_random_solution
 from algorithm import Algorithm
 
@@ -41,3 +42,4 @@ class HillClimbing(Algorithm):
                 neighbors = Sbest.get_neighbors()
             k += 1
         return Sbest, Ebest, path
+
