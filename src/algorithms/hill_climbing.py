@@ -1,23 +1,22 @@
-import os
-import sys
-import subprocess
 from solution import Solution
 import random
-
 
 from random_solution import get_random_solution
 from algorithm import Algorithm
 
 from mpi4py import MPI
 
+import subprocess
+import os 
+import sys
 
 class HillClimbing(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
         super().__init__(hparams, problem_size)
         self.comm = MPI.COMM_WORLD        
         
-    def run(self, num_steps, evaluation_session):
-        Sbest = get_random_solution(self.problem_size, evaluation_session)
+    def run(self, num_steps):
+        Sbest = get_random_solution(self.problem_size)
         Ebest = Sbest.cost()
         neighbors = Sbest.get_neighbors()
         k = 0
@@ -42,4 +41,3 @@ class HillClimbing(Algorithm):
                 neighbors = Sbest.get_neighbors()
             k += 1
         return Sbest, Ebest, path
-

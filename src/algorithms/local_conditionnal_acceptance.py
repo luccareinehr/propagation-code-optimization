@@ -5,13 +5,12 @@ from algorithm import Algorithm
 
 from random_solution import get_random_solution
 
-
 class LocalConditionnalAcceptance(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
         super().__init__(hparams, problem_size)
         self.T0 = hparams['t0']
         # TODO: current temperature function is hard coded
-        self.f = lambda x: 0.9*x
+        self.f = lambda x : 0.9*x
 
     def run(self, kmax):
         T0 = self.T0

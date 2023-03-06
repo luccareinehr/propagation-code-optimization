@@ -3,7 +3,8 @@ import numpy as np
 
 from solution import Solution
 from evaluator import Simulator
-from solution_space import get_random_solution, SolutionSpace
+from random_solution import get_random_solution
+from solution_space import SolutionSpace
 from algorithm import Algorithm
 
 class CMAESAlgorithm(Algorithm):
