@@ -25,31 +25,32 @@ def run_algorithm(algorithm, args, comm, evaluation_session):
     Me = comm.Get_rank()
     best_solution, best_cost, path = algorithm.run(args.steps, evaluation_session)
 
-    
-    print('\n\nPath taken:')
-    for sol in path:
-        print(sol[1], end=' ')
-        sol[0].display()
 
-    print('\n\nBest solution found:', end=' ')
-    best_solution.display()
-    print(best_cost)
+    if best_cost is not None:
+        print('\n\nPath taken:')
+        for sol in path:
+            print(sol[1], end=' ')
+            sol[0].display()
 
-    TabE = comm.gather(best_cost,root=0)
-    TabS = comm.gather(best_solution,root=0)
-    total_runs = comm.reduce(evaluation_session.run_counter,op=MPI.SUM, root=0)
-    if (Me == 0):
-        print('\n\nBest solutions:')
-        for i in range(len(TabE)):
-            TabS[i].display()
-            print(TabE[i])
-        print('\nBest overall:')
-        Eopt = max(TabE)
-        idx = TabE.index(Eopt)
-        Sopt = TabS[idx]
-        Sopt.display()
-        print(Eopt)
-        print('Total cost evaluations:', total_runs)
+        print('\n\nBest solution found:', end=' ')
+        best_solution.display()
+        print(best_cost)
+
+        TabE = comm.gather(best_cost,root=0)
+        TabS = comm.gather(best_solution,root=0)
+        total_runs = comm.reduce(evaluation_session.run_counter,op=MPI.SUM, root=0)
+        if (Me == 0):
+            print('\n\nBest solutions:')
+            for i in range(len(TabE)):
+                TabS[i].display()
+                print(TabE[i])
+            print('\nBest overall:')
+            Eopt = max(TabE)
+            idx = TabE.index(Eopt)
+            Sopt = TabS[idx]
+            Sopt.display()
+            print(Eopt)
+            print('Total cost evaluations:', total_runs)
 
 if __name__ == "__main__":
     comm = MPI.COMM_WORLD
@@ -77,7 +78,7 @@ if __name__ == "__main__":
         print('\t{}: {}'.format(k, v))
     
     algorithm_class = get_algorithm(args.algorithm)
-    algorithm = algorithm_class(hparams, args.problem_size)
+    algorithm = algorithm_class(hparams, args.problem_size, comm)
 
     print('Hyperparameters:')
     for k, v in sorted(algorithm.hparams.items()):

@@ -1,12 +1,13 @@
 class Algorithm:
-    def __init__(self, hparams, problem_size) -> None:
+    def __init__(self, hparams, problem_size, comm) -> None:
         self.default_hparams = { }
         self.hparams = { } # this will remain empty untill parse_hyperparameters
         self.raw_hparams = hparams
         self.problem_size = problem_size
         self.hyperparameters_parsed = False
+        self.comm = comm
 
-    def run(self, num_steps) -> None:
+    def run(self, num_steps, evaluation_session) -> None:
         raise NotImplementedError
     
     def register_hyperparameter(self, key, default_value):

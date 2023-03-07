@@ -2,6 +2,8 @@ import subprocess
 import re
 import threading
 import os
+import numpy as np
+
 from optimizer.evaluator import Simulator
 from optimizer.solution_space import SolutionSpace
 
@@ -16,12 +18,15 @@ class Solution:
         self.thrdblock_x = thrdblock_x
         self.thrdblock_y = thrdblock_y
         self.thrdblock_z = thrdblock_z
+        self.calculated_cost = None
 
         self.simulator = simulator
 
         self.simulator.sol_increase()
 
     def cost(self, verbose=False, delete_file=True, num_evaluations=1):
+        if self.calculated_cost is not None:
+            return self.calculated_cost
 
         self.simulator.run_increase(num_evaluations)  # Increases in num_evaluations the counter of runs
 
@@ -64,6 +69,8 @@ class Solution:
                 raise Exception(f'Failed deleting: { result.returncode }')
 
         mean_throughput = round(mean_throughput/num_evaluations, 2)
+
+        self.calculated_cost = mean_throughput
         return mean_throughput
 
     def get_neighbors(self):
@@ -103,6 +110,10 @@ class Solution:
             neigh.add( (self.olevel, self.simd, self.problem_size_x, self.problem_size_y, self.problem_size_z, self.nthreads*2, self.thrdblock_x, self.thrdblock_y, self.thrdblock_z) )
         return [Solution(*n, self.simulator) for n in neigh]
 
+    def get_random_neighbor(self):
+        neighbors = self.get_neighbors()
+        return np.random.choice(neighbors)
+    
     def display(self):
         print(self.olevel, self.simd, self.problem_size_x, self.problem_size_y,
               self.problem_size_z, self.nthreads, self.thrdblock_x, self.thrdblock_y, self.thrdblock_z)
