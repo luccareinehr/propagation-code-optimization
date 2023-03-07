@@ -1,9 +1,8 @@
-from solution import Solution
 import random
 import numpy as np
-from random_solution import get_random_solution
-from algorithm import Algorithm
-from mpi4py import MPI
+from optimizer.solution import Solution
+from optimizer.random_solution import get_random_solution
+from optimizer.algorithms import Algorithm
 
 def acceptance_func(energy_diff, temp):
     return 1 / (1 - energy_diff / temp) # cost is good, so we need to invert the sign
@@ -20,11 +19,11 @@ def ungroup_particles(particles):
 class CuriousSimulatedAnnealing(Algorithm): #(n_iter, init_state=None, n_particles=6, temperature_schedule=None)
     def __init__(self, hparams, problem_size, comm) -> None:
         super().__init__(hparams, problem_size, comm)
-        self.T0 = hparams['t0']
+        self.T0 = hparams.get('t0', 200)
         # TODO: current temperature function is hard coded
         self.f = lambda x: 0.9 * x
 
-    def run(self, num_steps) -> None:
+    def run(self, num_steps, evaluation_session) -> None:
         # Initialize communication
         world_size = self.comm.Get_size()
         my_rank = self.comm.Get_rank()
@@ -35,7 +34,7 @@ class CuriousSimulatedAnnealing(Algorithm): #(n_iter, init_state=None, n_particl
 
         if my_rank == 0:
 
-            init_state = get_random_solution(self.problem_size)
+            init_state = get_random_solution(self.problem_size, evaluation_session)
             particles = [init_state for _ in range(n_particles)]
             particle_weights = np.ones(n_particles) / n_particles
             path = [(init_state, init_state.cost())]

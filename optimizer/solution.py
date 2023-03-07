@@ -2,6 +2,8 @@ import subprocess
 import re
 import threading
 import os
+import numpy as np
+
 from optimizer.evaluator import Simulator
 from optimizer.solution_space import SolutionSpace
 

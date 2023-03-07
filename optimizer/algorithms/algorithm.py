@@ -7,7 +7,7 @@ class Algorithm:
         self.hyperparameters_parsed = False
         self.comm = comm
 
-    def run(self, num_steps) -> None:
+    def run(self, num_steps, evaluation_session) -> None:
         raise NotImplementedError
     
     def register_hyperparameter(self, key, default_value):
