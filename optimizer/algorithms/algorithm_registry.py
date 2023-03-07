@@ -1,12 +1,14 @@
 from optimizer.algorithms.hill_climbing import HillClimbing
 from optimizer.algorithms.greedy import Greedy, TabuGreedy
 from optimizer.algorithms.local_conditionnal_acceptance import LocalConditionnalAcceptance
+#from optimizer.algorithms.cmaes import CMAESAlgorithm
 
 ALGORITHMS = {
     'hill_climbing': HillClimbing,
     'greedy': Greedy,
     'tabu_greedy': TabuGreedy,
     'simulated_annealing': LocalConditionnalAcceptance,
+    #'cmaes': CMAESAlgorithm #TODO: Fix cma
 }
 
 def get_algorithm(algorithm_name):
