@@ -52,7 +52,7 @@ class TabuGreedy(Algorithm):
         super().__init__(hparams, problem_size, logger)
 
     def run(self, kmax):
-        self.logger.write_info('Starting tabu-greedy hill climbing')
+        self.logger.write_info('Starting tabu_greedy hill climbing')
         N_Tabu = self.hparams['n_tabu']
         Sbest = get_random_solution(self.problem_size)
         Ebest = Sbest.cost()
