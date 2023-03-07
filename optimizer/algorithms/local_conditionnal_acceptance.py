@@ -1,16 +1,20 @@
-from solution import Solution
 import random
 import math
-from algorithm import Algorithm
 
-from random_solution import get_random_solution
+from optimizer.solution import Solution
+from optimizer.random_solution import get_random_solution
+from optimizer.algorithms import Algorithm
+
 
 class LocalConditionnalAcceptance(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
         super().__init__(hparams, problem_size)
-        self.T0 = hparams['t0']
+        self.register_hyperparameter('t0', 100)
+        self.parse_hyperparameters()
+
+        self.T0 = self.hparams['t0']
         # TODO: current temperature function is hard coded
-        self.f = lambda x : 0.9*x
+        self.f = lambda x: 0.9*x
 
     def run(self, kmax):
         T0 = self.T0

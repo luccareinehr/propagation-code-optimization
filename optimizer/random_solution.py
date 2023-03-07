@@ -1,7 +1,8 @@
 import numpy as np
-from evaluator import Simulator
-from solution import Solution
-from solution_space import SolutionSpace
+
+from optimizer.evaluator import Simulator
+from optimizer.solution import Solution
+from optimizer.solution_space import SolutionSpace
 
 def get_random_solution(problem_size, simulator):
     return Solution(
@@ -17,3 +18,4 @@ def get_random_solution(problem_size, simulator):
         thrdblock_z=np.random.choice(SolutionSpace.threadblocks),
         simulator=simulator
     )
+

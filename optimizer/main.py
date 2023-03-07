@@ -5,29 +5,24 @@ import sys
 import subprocess
 import json
 
-import numpy as np
-from algorithm_registry import get_algorithm
-from deployment import deploy_kangaroo, deploy_single
-from evaluator import Simulator
+import numpy as np 
+
+from optimizer.algorithms import get_algorithm
+from optimizer.deployment import deploy_kangaroo, deploy_single
+from optimizer.evaluator import Simulator
 
 from mpi4py import MPI
-comm = MPI.COMM_WORLD
 
-
-def make_deterministic(seed):
+def make_deterministic(seed): 
     '''Makes that each process has a different real seed'''
     Me = comm.Get_rank()
     real_seed = seed*(Me + 1)
     random.seed(real_seed)
     np.random.seed(real_seed)
-    print(f'\nreal seed: {real_seed}\n')
-
-
-def run_algorithm(args, evaluation_session):
+    print(f'\nreal seed: {real_seed}\n')    
+        
+def run_algorithm(algorithm, args, comm, evaluation_session):
     Me = comm.Get_rank()
-
-    algorithm_class = get_algorithm(args.algorithm)
-    algorithm = algorithm_class(hparams, args.problem_size)
     best_solution, best_cost, path = algorithm.run(args.steps, evaluation_session)
 
     
@@ -57,6 +52,8 @@ def run_algorithm(args, evaluation_session):
         print('Total cost evaluations:', total_runs)
 
 if __name__ == "__main__":
+    comm = MPI.COMM_WORLD
+
     parser = argparse.ArgumentParser(description='Optimizer Launcher')
     parser.add_argument('--algorithm', type=str, default='hill_climbing')
     parser.add_argument('--steps', type=int, default=10,
@@ -78,9 +75,12 @@ if __name__ == "__main__":
     print('Args:')
     for k, v in sorted(vars(args).items()):
         print('\t{}: {}'.format(k, v))
+    
+    algorithm_class = get_algorithm(args.algorithm)
+    algorithm = algorithm_class(hparams, args.problem_size)
 
     print('Hyperparameters:')
-    for k, v in sorted(hparams.items()):
+    for k, v in sorted(algorithm.hparams.items()):
         print('\t{}: {}'.format(k, v))
 
     make_deterministic(args.seed)
@@ -89,6 +89,6 @@ if __name__ == "__main__":
         deploy_kangaroo(args, sys.argv[0])
     elif args.phase == 'deploy' and not args.kangaroo:
         deploy_single(args, sys.argv[0])
-    else:  # phase is run
+    else: # phase is run
         evaluation_session = Simulator()
-        run_algorithm(args, evaluation_session)
+        run_algorithm(algorithm, args, comm, evaluation_session)

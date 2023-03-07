@@ -18,11 +18,11 @@ and initialize it with `source .env`.
 ## Deployment Examples
 
 ```
-python3 src/optimizer.py --algorithm hill_climbing --steps 4
-python3 src/optimizer.py --algorithm greedy --steps 4
-python3 src/optimizer.py --algorithm tabu_greedy --steps 4 --hparams '{"n_tabu":5}'
-python3 src/optimizer.py --algorithm simulated_annealing --steps 10 --hparams '{"t0":20}'
-python3 src/optimizer.py --algorithm cmaes --steps 10
+python3 -m optimizer.main --algorithm hill_climbing --steps 4
+python3 -m optimizer.main --algorithm greedy --steps 4
+python3 -m optimizer.main --algorithm tabu_greedy --steps 4 --hparams '{"n_tabu":5}'
+python3 -m optimizer.main --algorithm simulated_annealing --steps 10 --hparams '{"t0":20}'
+python3 -m optimizer.main --algorithm cmaes --steps 10
 ```
 
 Flag `-kangaroo`: runs 4 instances in parallel with different initializations. 

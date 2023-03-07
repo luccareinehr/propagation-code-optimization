@@ -2,8 +2,8 @@ import subprocess
 import re
 import threading
 import os
-from evaluator import Simulator
-from solution_space import SolutionSpace
+from optimizer.evaluator import Simulator
+from optimizer.solution_space import SolutionSpace
 
 class Solution:
     def __init__(self, olevel, simd, problem_size_x, problem_size_y, problem_size_z, nthreads, thrdblock_x, thrdblock_y, thrdblock_z, simulator) -> None:

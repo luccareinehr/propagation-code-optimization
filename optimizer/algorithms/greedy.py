@@ -1,11 +1,8 @@
-from solution import Solution
 import math
 
-import os
-import sys
-import subprocess
-from algorithm import Algorithm
-from random_solution import get_random_solution
+from optimizer.algorithms import Algorithm
+from optimizer.random_solution import get_random_solution
+from optimizer.solution import Solution
 
 
 class Greedy(Algorithm):
@@ -53,6 +50,8 @@ class Greedy(Algorithm):
 class TabuGreedy(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
         super().__init__(hparams, problem_size)
+        self.register_hyperparameter('n_tabu', 5)
+        self.parse_hyperparameters()
 
     def run(self, kmax, evaluation_session):
         N_Tabu = self.hparams['n_tabu']

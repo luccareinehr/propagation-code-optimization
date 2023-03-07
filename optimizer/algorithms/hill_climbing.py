@@ -1,15 +1,13 @@
 import os
 import sys
 import subprocess
-from solution import Solution
 import random
-
-
-from random_solution import get_random_solution
-from algorithm import Algorithm
 
 from mpi4py import MPI
 
+from optimizer.solution import Solution
+from optimizer.random_solution import get_random_solution
+from optimizer.algorithms import Algorithm
 
 class HillClimbing(Algorithm):
     def __init__(self, hparams, problem_size) -> None:

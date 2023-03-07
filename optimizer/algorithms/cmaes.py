@@ -1,11 +1,11 @@
 import cma
 import numpy as np
 
-from solution import Solution
-from evaluator import Simulator
-from random_solution import get_random_solution
-from solution_space import SolutionSpace
-from algorithm import Algorithm
+from optimizer.solution import Solution
+from optimizer.evaluator import Simulator
+from optimizer.random_solution import get_random_solution
+from optimizer.solution_space import SolutionSpace
+from optimizer.algorithms import Algorithm
 
 class CMAESAlgorithm(Algorithm):
     def __init__(self, hparams, problem_size) -> None:
